@@ -16,13 +16,10 @@ function findFirstExistFile(files) {
 }
 
 function findDefaultConfig() {
-  const baseFile = './base.json';
-  const configFile = './config.json';
+  const configPath = './base.json';
   const files = [
-    path.resolve(process.cwd(), baseFile),
-    path.resolve(__dirname, '..', baseFile),
-    path.resolve(process.cwd(), configFile),
-    path.resolve(__dirname, '..', configFile),
+    path.resolve(process.cwd(), configPath),
+    path.resolve(__dirname, '..', configPath),
   ];
   return findFirstExistFile(files);
 }
