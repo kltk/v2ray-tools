@@ -34,7 +34,7 @@ function streamSettingsReverse(config) {
   } else if (net === 'tcp') {
     const { tcpSettings } = config;
     if (tcpSettings && tcpSettings.header && tcpSettings.header.type === 'http') {
-      type = 'http';
+      type = tcpSettings.header.type;
       host = tcpSettings.header.request.headers.Host 
       path = tcpSettings.header.request.path[0]
     }
