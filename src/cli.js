@@ -25,8 +25,8 @@ function vmess2ConfigArgs(yargs) {
 function config2VmessArgs(yargs) {
   return yargs
     .option('path', {
-      default: findDefaultConfig(),
       describe: 'the path for the v2ray config file',
+      demandOption: true
     })
 }
 
