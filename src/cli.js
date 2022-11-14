@@ -22,10 +22,24 @@ function vmess2ConfigArgs(yargs) {
     });
 }
 
+function config2VmessArgs(yargs) {
+  return yargs
+    .option('path', {
+      describe: 'the path for the v2ray config file',
+      demandOption: true
+    })
+}
+
 function vmess2ConfigHandler(argv) {
   const vmess2config = require('./vmess2config');
   const config = vmess2config(argv);
   console.log(JSON.stringify(config, '', 2));
+}
+
+function config2VmessHandler(argv){
+  const config2vmess = require('./config2vmess');
+  const vmessUrl = config2vmess(argv);
+  console.log(vmessUrl);
 }
 
 function vmessTestArgs(yargs) {
@@ -53,5 +67,11 @@ require('yargs')
     'test avaliability for server from url',
     vmessTestArgs,
     vmessTestHandler,
+  )
+  .command(
+    'config2vmess',
+    'convert v2ray config file into vmess url',
+    config2VmessArgs,
+    config2VmessHandler,
   )
   .help().argv;
