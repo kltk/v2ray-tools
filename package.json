@@ -1,6 +1,6 @@
 {
   "name": "v2ray-tools",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "v2ray tools, convert vmess url into v2ray config, vmess url test",
   "main": "index.js",
   "repository": {
