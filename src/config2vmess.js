@@ -46,7 +46,10 @@ function streamSettingsReverse(config) {
 
 
 function createVmessObj(outboundConfig) {
-  const [ps, add, port] = outboundConfig.tag.split(' ');
+  const tag = outboundConfig.tag.split(' ');
+  const port = tag.pop();
+  const add = tag.pop();
+  const ps = tag.join(" ");
   const streamSettings = outboundConfig.streamSettings;
   const [vnext] = outboundConfig.settings.vnext;
   const [user] = vnext.users;
