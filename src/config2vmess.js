@@ -4,6 +4,8 @@ const { Base64 } = require('js-base64');
 
 const VMESS_PROTO = 'vmess://';
 
+// attempts to reverse the streamSettings present in any v2ray config.json file
+// by extracting the required information for a Vmess Obj 
 function streamSettingsReverse(config) {
   let net = null, tls = null, host = null, type = null, path = null;
 
@@ -44,7 +46,7 @@ function streamSettingsReverse(config) {
   }
 }
 
-
+// the final Vmess configuration object that will be converted to JSON then to Base64
 function createVmessObj(outboundConfig) {
   const tag = outboundConfig.tag.split(' ');
   const port = tag.pop();
@@ -57,6 +59,8 @@ function createVmessObj(outboundConfig) {
   const aid = user.alterId;
   const { net, tls, host, type, path } = streamSettingsReverse(streamSettings);
 
+  // the reason for casting out "none" here is that v2ray configs are strict
+  // an empty string "" instead of "none" will break the config 
   const obj = {
     v: "2",
     ps: ps || "none",
@@ -74,6 +78,7 @@ function createVmessObj(outboundConfig) {
   return obj;
 }
 
+// craft a Base64 string out of Vmess Obj
 function createEncodedUrl(config) {
   const [outbound] = config.outbounds;
   if (outbound.protocol === 'vmess') {
