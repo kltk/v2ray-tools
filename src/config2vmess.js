@@ -9,34 +9,34 @@ const VMESS_PROTO = 'vmess://';
 function streamSettingsReverse(config) {
   let net = null, tls = null, host = null, type = null, path = null;
 
-  net = config.network;
+  net = config?.network;
 
-  if (config.security === 'tls') {
+  if (config?.security === 'tls') {
     tls = 'tls';
-    if (config.tlsSettings.serverName) host = config.tlsSettings.serverName;
+    if (config?.tlsSettings?.serverName) host = config?.tlsSettings?.serverName;
   }
 
   if (net === 'kcp') {
     const { kcpSettings } = config;
-    type = kcpSettings.header.type 
+    type = kcpSettings?.header?.type
   } else if (net === 'ws') {
     const { wsSettings } = config;
-    if (host) host = wsSettings.headers.Host;
-    if (wsSettings.path) path = wsSettings.path;
+    if (host) host = wsSettings?.headers?.Host;
+    if (wsSettings?.path) path = wsSettings?.path;
   } else if (net === 'h2') {
     const { httpSettings } = config;
-    if (httpSettings.host) host = httpSettings.host.join(',');
-    path = httpSettings.path;
+    if (httpSettings?.host) host = httpSettings?.host?.join(',');
+    path = httpSettings?.path;
   } else if (net === 'quic') {
     const { quicSettings } = config;
-    host = quicSettings.security 
-    path = quicSettings.key
-    type = quicSettings.header.type;
+    host = quicSettings?.security
+    path = quicSettings?.key
+    type = quicSettings?.header?.type;
   } else if (net === 'tcp') {
     const { tcpSettings } = config;
     if (tcpSettings && tcpSettings.header && tcpSettings.header.type === 'http') {
       type = tcpSettings.header.type;
-      host = tcpSettings.header.request.headers.Host 
+      host = tcpSettings.header.request.headers.Host
       path = tcpSettings.header.request.path[0]
     }
   }
@@ -48,23 +48,24 @@ function streamSettingsReverse(config) {
 
 // the final Vmess configuration object that will be converted to JSON then to Base64
 function createVmessObj(outboundConfig) {
-  const tag = outboundConfig.tag.split(' ');
-  const port = tag.pop();
-  const add = tag.pop();
-  const ps = tag.join(" ");
-  const streamSettings = outboundConfig.streamSettings;
-  const [vnext] = outboundConfig.settings.vnext;
-  const [user] = vnext.users;
-  const id = user.id;
-  const aid = user.alterId;
+  let { tag } = outboundConfig;
+  if(tag && tag.length) {
+    tag = tag.split(" ")[0];
+  }
+  const streamSettings = outboundConfig?.streamSettings;
+  const [vnext] = outboundConfig.settings?.vnext;
+  const { address, port } = vnext;
+  const [user] = vnext?.users;
+  const id = user?.id;
+  const aid = user?.alterId;
   const { net, tls, host, type, path } = streamSettingsReverse(streamSettings);
 
   // the reason for casting out "none" here is that v2ray configs are strict
   // an empty string "" instead of "none" will break the config 
   const obj = {
     v: "2",
-    ps: ps || "none",
-    add: add || "none",
+    ps: tag || "none",
+    add: address || "none",
     port: Number(port) || 0,
     id: id || 0,
     aid: aid || 0,
